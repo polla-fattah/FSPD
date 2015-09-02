@@ -1,56 +1,3 @@
-
-
-getLink <- function(symbol, d1, m1, y1, d2, m2, y2,  link, g='d'){
-  # Yahoo Variable meanings 
-  # s = symbol (symbol
-  # a = Start Month - 1 this means Janiury is zero {m1}
-  # b = Start Day (d1)
-  # c = Start Year
-  # d = End Month - 1 this means Janiury is zero
-  # e = End Day
-  # f = End Year
-  # g = period: d -> daily, w -> Weekly, m -> Monthly, v -> dividant Only
-  if(link == 'Yahoo'){
-    return (paste0('http://real-chart.finance.yahoo.com/table.csv?s=', symbol, '&a=', m1 - 1, 
-         '&b=', d1, '&c=', y1, '&d=', m2 -1 , '&e=', d2, '&f=', y2, '&g=', g, '&ignore=.csv'))
-  }
-  if(link == 'google'){
-    monthes = c('Jan',	'Feb',	'Mar',	'Apr',	'May',	'Jun',	'Jul',
-                'Aug',	'Sep',	'Oct',	'Nov',	'Dec')
-   
-    return (paste0('http://www.google.co.uk/finance/historical?q=', symbol, '&startdate=',monthes[m1], '+',
-                    d1, '%2C+', y1, '&enddate=', monthes[m2], '+', d2,'%2C+', y2, '&output=csv'))
-  }
-    stop('Not supported site')
-}
-
-getHistQuote <- function(symbol, d1, m1, y1, d2, m2, y2, site='yahoo', g='d'){
-
-		link = getLink(symbol, d1, m1, y1, d2, m2, y2, g='d', site)
-	
-	tryCatch({
-			try(read.csv(link))
-		}, 
-		warning = function(w) {
-			stop(paste('Historical quote data for symbol:', symbol, ' is unavailable for the specified date range'))
-		},
-		error = function(e) {
-			stop(paste('Historical quote data for symbol:', symbol, ' is unavailable for the specified date range'))
-			
-		}
-	)
-}
-
-getHistQuotes <- function(symbols, d1, m1, y1, d2, m2, y2, site='yahoo', g='d'){
-	result <- list()
-	for(s in symbols){
-		
-		dat <- getHistQuote(s, d1, m1, y1, d2, m2, y2, g)
-		dat[['Symbol']] <- rep(s, nrow(dat))
-		result <- rbind(result, dat)
-	}
-	result
-}
 getDJList <- function(){
   c('AAPL',  'AXP',  'BA',  'CAT',  'CSCO',  'CVX',  'DD',  'DIS',  'GE',  
     'GS',  'HD',  'IBM',  'INTC',  'JNJ',  'JPM',  'KO',  'MCD',  'MMM',  
@@ -107,14 +54,57 @@ getSP500List<- function(){
 }
 
 
-getHistSnP500Quotes <- function( d1, m1, y1, d2, m2, y2, site='yahoo', g='d'){
-  result <- list()
-  symbols <- getSP500List()
-  
-  for(s in symbols){
-    dat <- getHistQuote(s, d1, m1, y1, d2, m2, y2, g)
-    dat[['Symbol']] <- rep(s, nrow(dat))
-    result <- rbind(result, dat)
+getLink <- function(symbol, d1, m1, y1, d2, m2, y2,  site, g='d'){
+  # Yahoo Variable meanings 
+  # s = symbol (symbol
+  # a = Start Month - 1 this means Janiury is zero {m1}
+  # b = Start Day (d1)
+  # c = Start Year
+  # d = End Month - 1 this means Janiury is zero
+  # e = End Day
+  # f = End Year
+  # g = period: d -> daily, w -> Weekly, m -> Monthly, v -> dividant Only
+  if(site == 'yahoo'){
+    return (paste0('http://real-chart.finance.yahoo.com/table.csv?s=', symbol, '&a=', m1 - 1, 
+         '&b=', d1, '&c=', y1, '&d=', m2 -1 , '&e=', d2, '&f=', y2, '&g=', g, '&ignore=.csv'))
   }
-  result
+  if(site == 'google'){
+    
+    monthes = c('Jan',	'Feb',	'Mar',	'Apr',	'May',	'Jun',	'Jul',
+                'Aug',	'Sep',	'Oct',	'Nov',	'Dec')
+   
+    return (paste0('http://www.google.co.uk/finance/historical?q=', symbol, '&startdate=',monthes[m1], '+',
+                    d1, '%2C+', y1, '&enddate=', monthes[m2], '+', d2,'%2C+', y2, '&output=csv'))
+  }
+    stop('Not supported site')
 }
+
+getHistQuote <- function(symbol, d1, m1, y1, d2, m2, y2, site='yahoo', g='d'){
+
+		link = getLink(symbol, d1, m1, y1, d2, m2, y2, site, g='d')
+	
+	tryCatch({
+			try(read.csv(link))
+		}, 
+		warning = function(w) {
+			stop(paste('Historical quote data for symbol:', symbol, ' is unavailable for the specified date range'))
+		},
+		error = function(e) {
+			stop(paste('Historical quote data for symbol:', symbol, ' is unavailable for the specified date range'))
+			
+		}
+	)
+}
+
+getHistQuotes <- function(symbols, d1, m1, y1, d2, m2, y2, site='yahoo', g='d'){
+	result <- list()
+	for(s in symbols){
+		dat <- getHistQuote(s, d1, m1, y1, d2, m2, y2, site, g)
+		dat[['Symbol']] <- rep(s, nrow(dat))
+		result <- rbind(result, dat)
+	}
+	result
+}
+
+
+
