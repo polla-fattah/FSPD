@@ -51,7 +51,12 @@ getHistQuotes <- function(symbols, d1, m1, y1, d2, m2, y2, site='yahoo', g='d'){
 	}
 	result
 }
-
+getDJList <- function(){
+  c('AAPL',  'AXP',  'BA',  'CAT',  'CSCO',  'CVX',  'DD',  'DIS',  'GE',  
+    'GS',  'HD',  'IBM',  'INTC',  'JNJ',  'JPM',  'KO',  'MCD',  'MMM',  
+    'MRK',  'MSFT',  'NKE',  'PFE',  'PG',  'TRV',  'UNH',  'UTX',  'V',  
+    'VZ',  'WMT')
+}
 getSP500List<- function(){
   c('A', 'AA', 'AAL', 'AAP', 'AAPL', 'ABBV', 'ABC', 'ABT', 'ACE', 'ACN', 
     'ADBE', 'ADI', 'ADM', 'ADP', 'ADS', 'ADSK', 'ADT', 'AEE', 'AEP', 'AES', 
