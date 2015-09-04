@@ -2,7 +2,7 @@ Free Stock Price Download (FSPD)
 ======================
 Introduction
 ------------
-This code reads historical stock market prices from free sources i.e. yahoo and google. it fetches historical temporal data between two dates for selected vector of stock symbols (tickers) and return it as data.frame.
+This code written in [R language](https://en.wikipedia.org/wiki/R_(programming_language)) reads historical stock market prices from free sources namely google and yahoo. It fetches historical temporal data between two dates for selected vector of stock symbols (tickers) and return it as data.frame.
 
 getHistQuotes
 -------
@@ -42,6 +42,6 @@ getHistQuotes(c('goog', 'yhoo'), 1,4,2014, 15,2,2015, site='yahoo', g='w')
 
 #Notes
 
- 1. The list of stock tickers of Dow Jones and S&P500 in functions `getSP500List()` and `getDJList()` has been copied from Wikipedia in 1/9/2015.
- 2. There is no track for ticker changes if a ticker symbol is not exist in specified date period the function will produce an error.
- 3. There is some differences between google and yahoo in the variable naming, price precision and date format.
+ 1. The list of stock tickers of [Dow Jones](https://en.wikipedia.org/wiki/Dow_Jones_Industrial_Average) and [S&P500](https://en.wikipedia.org/wiki/List_of_S%26P_500_companies) in functions `getSP500List()` and `getDJList()` has been copied from Wikipedia in 1/9/2015.
+ 2. There is no track for ticker changes if a ticker symbol does not exist in specified date period the function will produce an error.
+ 3. There are some differences between google and yahoo in the variable naming, price precision and date format.
