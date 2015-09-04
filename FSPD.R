@@ -99,28 +99,6 @@ getLink <- function(d1, m1, y1, d2, m2, y2,  site, g){
     stop('Not supported site')
 }
 
-##### getHistQuote #####
-# This function returnt a data frame contains data for specified 
-# symbol, dates as start date and end date and selected source google or yahoo.
-# paremeters:
-# - link a string represents source, frequency and period for fetching data. 
-#     Link parameter should be created using getLink function
-# - symbol: the stock matket ticker.
-getHistQuote <- function(link, symbol){
-
-	tryCatch({
-			try(read.csv(paste0(link, symbol)))
-		}, 
-		warning = function(w) {
-			stop(paste('Historical quote data for symbol:', symbol, ' is unavailable for the specified date range'))
-		},
-		error = function(e) {
-			stop(paste('Historical quote data for symbol:', symbol, ' is unavailable for the specified date range'))
-			
-		}
-	)
-}
-
 ##### getHistQuotes #####
 # This function returnt a data frame contains data for specified list of 
 # symbol, dates as start date and end date and selected source google or yahoo.
@@ -138,10 +116,22 @@ getHistQuote <- function(link, symbol){
 getHistQuotes <- function(symbols, d1, m1, y1, d2, m2, y2, site='yahoo', g='d'){
 	result <- list()
 	link <- getLink(d1, m1, y1, d2, m2, y2, site, g)
-	for(s in symbols){
-		dat <- getHistQuote(link, s)
-		dat[['Symbol']] <- rep(s, nrow(dat))
-		result <- rbind(result, dat)
+	
+	for(symbol in symbols){
+		tryCatch({
+			dat <- read.csv(paste0(link, symbol))
+			dat[['Symbol']] <- rep(symbol, nrow(dat))
+			result <- rbind(result, dat)
+		}, 
+		warning = function(w) {
+			warning(paste('[', symbol,'] Couldn\'t be found in the specified range of dates'))
+			#stop(paste('Historical quote data for symbol:', symbol, ' is unavailable for the specified date range'))
+		},
+		error = function(e) {
+			warning(paste('[', symbol,'] Couldn\'t be found in the specified range of dates'))
+			#stop(paste('Historical quote data for symbol:', symbol, ' is unavailable for the specified date range'))
+		})
+
 	}
 	result
 }
