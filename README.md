@@ -8,7 +8,7 @@ getHistQuotes
 -------
 ```
 getHistQuotes(symbols, d1, m1, y1, d2, m2, y2, 
-		   site='yahoo', g='d')
+		   site='yahoo', g='d', respond404='warning')
 ```
 
  - symbols: the stock market ticker.
@@ -20,7 +20,7 @@ getHistQuotes(symbols, d1, m1, y1, d2, m2, y2,
    + w -> Weekly
    + m -> Monthly
    + v -> dividends Only
-
+- respond404: specify response of unavailable values can be warning or error (default is 'warning')
 ###Description 
 This function returns a data frame contains data for specified list of 
 symbol, dates as start date and end date and selected source google or yahoo.
@@ -43,5 +43,5 @@ getHistQuotes(c('goog', 'yhoo'), 1,4,2014, 15,2,2015, site='yahoo', g='w')
 #Notes
 
  1. The list of stock tickers of [Dow Jones](https://en.wikipedia.org/wiki/Dow_Jones_Industrial_Average) and [S&P500](https://en.wikipedia.org/wiki/List_of_S%26P_500_companies) in functions `getSP500List()` and `getDJList()` has been copied from Wikipedia in 1/9/2015.
- 2. There is no track for ticker changes if a ticker symbol does not exist in specified date period the function will produce an error.
+ 2. There is no track for ticker changes if a ticker symbol does not exist in specified date period the function will produce a warning and can be changed to stop the process by throwing an error.
  3. There are some differences between google and yahoo in the variable naming, price precision and date format.

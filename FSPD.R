@@ -113,7 +113,8 @@ getLink <- function(d1, m1, y1, d2, m2, y2,  site, g){
 #     + w -> Weekly
 #     + m -> Monthly
 #     + v -> dividant Only
-getHistQuotes <- function(symbols, d1, m1, y1, d2, m2, y2, site='yahoo', g='d'){
+# - respond404: specify response of unavailable values can be warning or error
+getHistQuotes <- function(symbols, d1, m1, y1, d2, m2, y2, site='yahoo', g='d', respond404 = 'warning'){
 	result <- list()
 	link <- getLink(d1, m1, y1, d2, m2, y2, site, g)
 	
@@ -124,14 +125,12 @@ getHistQuotes <- function(symbols, d1, m1, y1, d2, m2, y2, site='yahoo', g='d'){
 			result <- rbind(result, dat)
 		}, 
 		warning = function(w) {
-			warning(paste('[', symbol,'] Couldn\'t be found in the specified range of dates'))
-			#stop(paste('Historical quote data for symbol:', symbol, ' is unavailable for the specified date range'))
-		},
-		error = function(e) {
-			warning(paste('[', symbol,'] Couldn\'t be found in the specified range of dates'))
-			#stop(paste('Historical quote data for symbol:', symbol, ' is unavailable for the specified date range'))
+			cat('warning', symbol, '\n')
+			if(respond404 == 'warning')
+				warning(paste('[', symbol,'] Couldn\'t be found in the specified range of dates'))
+			else
+				stop(paste('Historical quote data for symbol:', symbol, ' is unavailable for the specified date range'))
 		})
-
 	}
 	result
 }
