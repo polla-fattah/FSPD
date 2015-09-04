@@ -65,7 +65,6 @@ getSP500List<- function(){
 # for specified dates as start date and end date and selected source 
 # google or yahoo. 
 # paremeters:
-# - symbol: the stock matket ticker.
 # - d1, m1, and y1: the start date [day month, year]
 # - d2, m2, and y2: the end date [day, month, year]
 # - site: 'google', 'yahoo'
@@ -75,7 +74,7 @@ getSP500List<- function(){
 #     + w -> Weekly
 #     + m -> Monthly
 #     + v -> dividant Only
-getLink <- function(symbol, d1, m1, y1, d2, m2, y2,  site, g='d'){
+getLink <- function(d1, m1, y1, d2, m2, y2,  site, g){
   # Yahoo Variable meanings 
   # s = symbol (symbol
   # a = Start Month - 1 this means Janiury is zero {m1}
@@ -86,16 +85,16 @@ getLink <- function(symbol, d1, m1, y1, d2, m2, y2,  site, g='d'){
   # f = End Year
   # g = period: d -> daily, w -> Weekly, m -> Monthly, v -> dividant Only
   if(site == 'yahoo'){
-    return (paste0('http://real-chart.finance.yahoo.com/table.csv?s=', symbol, '&a=', m1 - 1, 
-         '&b=', d1, '&c=', y1, '&d=', m2 -1 , '&e=', d2, '&f=', y2, '&g=', g, '&ignore=.csv'))
+    return (paste0('http://real-chart.finance.yahoo.com/table.csv?a=', m1 - 1, 
+         '&b=', d1, '&c=', y1, '&d=', m2 -1 , '&e=', d2, '&f=', y2, '&g=', g, '&ignore=.csv&s='))
   }
   if(site == 'google'){
     
     monthes = c('Jan',	'Feb',	'Mar',	'Apr',	'May',	'Jun',	'Jul',
                 'Aug',	'Sep',	'Oct',	'Nov',	'Dec')
    
-    return (paste0('http://www.google.co.uk/finance/historical?q=', symbol, '&startdate=',monthes[m1], '+',
-                    d1, '%2C+', y1, '&enddate=', monthes[m2], '+', d2,'%2C+', y2, '&output=csv'))
+    return (paste0('http://www.google.co.uk/finance/historical?startdate=',monthes[m1], '+',
+                    d1, '%2C+', y1, '&enddate=', monthes[m2], '+', d2,'%2C+', y2, '&output=csv&q='))
   }
     stop('Not supported site')
 }
@@ -104,22 +103,13 @@ getLink <- function(symbol, d1, m1, y1, d2, m2, y2,  site, g='d'){
 # This function returnt a data frame contains data for specified 
 # symbol, dates as start date and end date and selected source google or yahoo.
 # paremeters:
+# - link a string represents source, frequency and period for fetching data. 
+#     Link parameter should be created using getLink function
 # - symbol: the stock matket ticker.
-# - d1, m1, and y1: the start date [day month, year]
-# - d2, m2, and y2: the end date [day, month, year]
-# - site: 'google', 'yahoo' (default is yahoo)
-# - g: if google has been selected this parameter is ignored. for Yahoo this 
-#      parameter can have these values to return values accordingly (defualt is d):
-#     + d -> daily
-#     + w -> Weekly
-#     + m -> Monthly
-#     + v -> dividant Only
-getHistQuote <- function(symbol, d1, m1, y1, d2, m2, y2, site='yahoo', g='d'){
+getHistQuote <- function(link, symbol){
 
-		link = getLink(symbol, d1, m1, y1, d2, m2, y2, site, g='d')
-	
 	tryCatch({
-			try(read.csv(link))
+			try(read.csv(paste0(link, symbol)))
 		}, 
 		warning = function(w) {
 			stop(paste('Historical quote data for symbol:', symbol, ' is unavailable for the specified date range'))
@@ -147,8 +137,9 @@ getHistQuote <- function(symbol, d1, m1, y1, d2, m2, y2, site='yahoo', g='d'){
 #     + v -> dividant Only
 getHistQuotes <- function(symbols, d1, m1, y1, d2, m2, y2, site='yahoo', g='d'){
 	result <- list()
+	link <- getLink(d1, m1, y1, d2, m2, y2, site, g)
 	for(s in symbols){
-		dat <- getHistQuote(s, d1, m1, y1, d2, m2, y2, site, g)
+		dat <- getHistQuote(link, s)
 		dat[['Symbol']] <- rep(s, nrow(dat))
 		result <- rbind(result, dat)
 	}
