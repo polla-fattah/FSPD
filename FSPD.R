@@ -1,9 +1,16 @@
+##### getDJList #####
+# This list is of Dow Jones has been copied from wikipedia at 1/9/2015. 
+# returns a vector contining 29 elements.
 getDJList <- function(){
   c('AAPL',  'AXP',  'BA',  'CAT',  'CSCO',  'CVX',  'DD',  'DIS',  'GE',  
     'GS',  'HD',  'IBM',  'INTC',  'JNJ',  'JPM',  'KO',  'MCD',  'MMM',  
     'MRK',  'MSFT',  'NKE',  'PFE',  'PG',  'TRV',  'UNH',  'UTX',  'V',  
     'VZ',  'WMT')
 }
+
+##### getSP500List #####
+# This list is of Dow Jones has been copied from wikipedia at 1/9/2015. 
+# returns a vector contining 501 elements.
 getSP500List<- function(){
   c('A', 'AA', 'AAL', 'AAP', 'AAPL', 'ABBV', 'ABC', 'ABT', 'ACE', 'ACN', 
     'ADBE', 'ADI', 'ADM', 'ADP', 'ADS', 'ADSK', 'ADT', 'AEE', 'AEP', 'AES', 
@@ -53,7 +60,21 @@ getSP500List<- function(){
     'YUM', 'ZBH', 'ZION', 'ZTS')
 }
 
-
+##### getLink #####
+# This function returnt a string represents the link for the data source 
+# for specified dates as start date and end date and selected source 
+# google or yahoo. 
+# paremeters:
+# - symbol: the stock matket ticker.
+# - d1, m1, and y1: the start date [day month, year]
+# - d2, m2, and y2: the end date [day, month, year]
+# - site: 'google', 'yahoo'
+# - g: if google has been selected this parameter is ignored. for Yahoo this 
+#      parameter can have these values to return values accordingly:
+#     + d -> daily
+#     + w -> Weekly
+#     + m -> Monthly
+#     + v -> dividant Only
 getLink <- function(symbol, d1, m1, y1, d2, m2, y2,  site, g='d'){
   # Yahoo Variable meanings 
   # s = symbol (symbol
@@ -79,6 +100,20 @@ getLink <- function(symbol, d1, m1, y1, d2, m2, y2,  site, g='d'){
     stop('Not supported site')
 }
 
+##### getHistQuote #####
+# This function returnt a data frame contains data for specified 
+# symbol, dates as start date and end date and selected source google or yahoo.
+# paremeters:
+# - symbol: the stock matket ticker.
+# - d1, m1, and y1: the start date [day month, year]
+# - d2, m2, and y2: the end date [day, month, year]
+# - site: 'google', 'yahoo' (default is yahoo)
+# - g: if google has been selected this parameter is ignored. for Yahoo this 
+#      parameter can have these values to return values accordingly (defualt is d):
+#     + d -> daily
+#     + w -> Weekly
+#     + m -> Monthly
+#     + v -> dividant Only
 getHistQuote <- function(symbol, d1, m1, y1, d2, m2, y2, site='yahoo', g='d'){
 
 		link = getLink(symbol, d1, m1, y1, d2, m2, y2, site, g='d')
@@ -96,6 +131,20 @@ getHistQuote <- function(symbol, d1, m1, y1, d2, m2, y2, site='yahoo', g='d'){
 	)
 }
 
+##### getHistQuotes #####
+# This function returnt a data frame contains data for specified list of 
+# symbol, dates as start date and end date and selected source google or yahoo.
+# paremeters:
+# - symbol: the stock matket ticker.
+# - d1, m1, and y1: the start date [day month, year]
+# - d2, m2, and y2: the end date [day, month, year]
+# - site: 'google', 'yahoo' (default is yahoo)
+# - g: if google has been selected this parameter is ignored. for Yahoo this 
+#      parameter can have these values to return values accordingly (defualt is d):
+#     + d -> daily
+#     + w -> Weekly
+#     + m -> Monthly
+#     + v -> dividant Only
 getHistQuotes <- function(symbols, d1, m1, y1, d2, m2, y2, site='yahoo', g='d'){
 	result <- list()
 	for(s in symbols){
