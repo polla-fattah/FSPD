@@ -125,7 +125,6 @@ getHistQuotes <- function(symbols, d1, m1, y1, d2, m2, y2, site='yahoo', g='d', 
 			result <- rbind(result, dat)
 		}, 
 		warning = function(w) {
-			cat('warning', symbol, '\n')
 			if(respond404 == 'warning')
 				warning(paste('[', symbol,'] Couldn\'t be found in the specified range of dates'))
 			else
@@ -134,6 +133,27 @@ getHistQuotes <- function(symbols, d1, m1, y1, d2, m2, y2, site='yahoo', g='d', 
 	}
 	result
 }
+##This function filters incomplete data and then orders them according to their symbol, date
+# Parameters:
+# 1- data: fetched data from getHistQuotes 
+# 2- thrishold: the limith for filtering incompletes
+# 3- fileName: if provided will save data in to the file
 
-
+orderAndFilter <- function(data, thrishold, fileName=''){
+	data$Date <- as.numeric(data$Date)
+	splitedData <- split(data, data$Symbol)
+	filtered <- splitedData[lapply(splitedData, nrow) >= thrishold]
+	merged <- NULL
+	
+	for(ticker in filtered)
+		merged <- rbind(merged, ticker)
+	
+	row.names(merged) <- NULL
+	
+	ordered <- merged[order(merged$Symbol, merged$Date), ]
+	if (fileName =='')
+		return (ordered)
+	else
+		write.csv(x =  ordered, file = fileName, row.names = F)
+}
 
