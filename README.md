@@ -1,3 +1,7 @@
+Outdated Please use some R packages instead like (BatchGetSymbols). I will keep this for historical reasons.
+======================
+
+
 Free Stock Price Download (FSPD)
 ======================
 Introduction
